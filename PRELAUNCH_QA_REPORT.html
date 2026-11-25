@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>上线前全站体检报告 — Barley Hair Restoration</title>
+<style>
+:root{--primary:#1a3570;--gold:#c9a227;--green:#1a7f44;--red:#c0392b;--bg:#f5f7fa;--card:#fff;--text:#222;--muted:#667}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 24px 80px}
+h1{color:var(--primary);font-size:30px;margin:0 0 8px}
+.lead{color:var(--muted);margin:0 0 28px;font-size:15px}
+.badge{display:inline-block;background:var(--green);color:#fff;padding:5px 14px;border-radius:20px;font-size:13px;font-weight:600;margin-left:10px;vertical-align:middle}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:24px 0 34px}
+.stat{background:var(--card);border:1px solid #e3e8ef;border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,.03)}
+.stat b{display:block;font-size:30px;color:var(--primary);line-height:1.2}.stat span{font-size:13px;color:var(--muted)}
+h2{color:var(--primary);font-size:20px;margin:32px 0 14px;border-left:4px solid var(--gold);padding-left:12px}
+.card{background:var(--card);border:1px solid #e3e8ef;border-radius:12px;padding:20px 24px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.03)}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #eef1f5;vertical-align:top}th{color:var(--primary);background:#f8fafc;font-weight:600}
+tr:last-child td{border-bottom:none}
+code{background:#eef2f8;color:#2c4a8a;padding:2px 6px;border-radius:4px;font-size:12.5px;font-family:Consolas,Monaco,monospace}
+.ok{color:var(--green);font-weight:600}.fix{color:var(--gold);font-weight:600}.warn{color:#b7791f;font-weight:600}
+ul{margin:8px 0;padding-left:22px}li{margin:6px 0}
+.note{background:#fff8e6;border-left:4px solid var(--gold);padding:12px 16px;border-radius:6px;font-size:14px;margin:14px 0}
+.footer{text-align:center;color:#999;font-size:12px;margin-top:40px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>上线前全站体检报告 <span class="badge">✓ 可以上线</span></h1>
+<p class="lead">检查范围：66 个 HTML 页面 + css/style.css + js/main.js + sitemap.xml + robots.txt。结论：无阻断性错误，发现并修复 2 项问题，其余检查全部通过。</p>
+
+<div class="grid">
+  <div class="stat"><b>28/28</b><span>深度体检通过项</span></div>
+  <div class="stat"><b>17/17</b><span>基础校验通过项</span></div>
+  <div class="stat"><b>2</b><span>已修复的真实问题</span></div>
+  <div class="stat"><b>0</b><span>遗留阻断项</span></div>
+</div>
+
+<h2>一、发现并修复的问题</h2>
+<div class="card">
+<table>
+<tr><th style="width:26%">问题</th><th style="width:12%">严重度</th><th>处理与影响</th></tr>
+<tr><td><b>36 个城市页 CTA 按钮锚点失效</b></td><td class="fix">中 · 功能</td><td><code>&lt;a href="#contact"&gt;</code> 的“Book Your Free Consultation”等 2 个按钮点击后无反应——页面有 <code>&lt;section class="contact"&gt;</code> 但没有 <code>id="contact"</code>。已为 36 页统一补上 <code>id="contact"</code>，按钮现可正确滚动到联系区。</td></tr>
+<tr><td><b>剪贴板 API 在 HTTP 环境报错</b></td><td class="fix">低 · 兼容</td><td><code>copyToClipboard()</code> 原本只在 Promise 的 catch 里降级，若 <code>navigator.clipboard</code> 本身不存在（HTTP 站点 / 旧 Safari）会直接抛 TypeError。已增加前置存在性判断，并将降级逻辑抽取为 <code>legacyCopy()</code>，HTTP 与 HTTPS 均可复制微信号/WhatsApp/邮箱。JS 语法校验通过，3 个全局导出函数保持不变。</td></tr>
+</table>
+</div>
+
+<h2>二、全项检查结果（28 项全部通过）</h2>
+<div class="card">
+<table>
+<tr><th style="width:18%">分类</th><th style="width:8%">结果</th><th>检查内容</th></tr>
+<tr><td>HTML 结构</td><td class="ok">✓</td><td>66 页标签平衡、无重复 ID、每页单一 h1、无非法嵌套</td></tr>
+<tr><td>资源引用</td><td class="ok">✓</td><td>本地图片/CSS/JS 引用 0 处失效、无空 src、无根路径依赖（可部署在子目录）</td></tr>
+<tr><td>链接</td><td class="ok">✓</td><td>站内死链 0、失效锚点 0（已修复）、空 href 0</td></tr>
+<tr><td>SEO</td><td class="ok">✓</td><td>title/description 全覆盖且唯一、canonical 65/65 指向新域名、OG 标签完整、sitemap 覆盖全部公开页</td></tr>
+<tr><td>关键功能</td><td class="ok">✓</td><td>65 页表单 JS 与配置块完整（国际患者页按原设计无表单）；已核实服务方脚本用 <code>readyState</code> 兜底初始化，脚本与配置顺序安全</td></tr>
+<tr><td>兼容性</td><td class="ok">✓</td><td>66 页均有 lang / viewport 声明；3 档响应式断点（992/768/560px）；剪贴板双通道降级；JS 用 ES5 兼容语法</td></tr>
+<tr><td>安全</td><td class="ok">✓</td><td>无 HTTP 混合内容、无可疑第三方脚本、无旧域名/旧手机号残留</td></tr>
+<tr><td>编码</td><td class="ok">✓</td><td>UTF-8 无乱码、无 BOM、可见文案无中文/日文残留（仅开发注释含中文，不影响显示）</td></tr>
+<tr><td>外链视频</td><td class="ok">✓</td><td>2 个 barleyhair.com 视频 URL 与迁移前逐字一致，未改动</td></tr>
+<tr><td>性能基础</td><td class="ok">✓</td><td>830 处图片懒加载、CSS 括号平衡 883/883</td></tr>
+</table>
+</div>
+
+<h2>三、上线后建议优化（不影响本次上线）</h2>
+<div class="card">
+<ul>
+<li><b>配置 301 重定向</b>：把旧域名 <code>barley.zhifazhifa.com</code> 全站 301 到 <code>www.hair-grafting.com</code>，并在 Google Search Console / Bing Webmaster 提交域名迁移与新 sitemap，避免排名波动。</li>
+<li><b class="ok">✓ 已优化：4.59MB 动图 → 115KB 截图</b>：<code>images/new-method-logo-1.gif</code>（1280×720、210 帧）原本是 technology.html 中视频的 poster 封面，已用首帧（含品牌 Logo 与 "Choi Implanter Pen" 标题）导出为 <code>new-method-logo-1.jpg</code>，尺寸不变、画面一致，体积从 4.59MB 降至 115KB（<b>省 4.48MB / 97.5%</b>）。原 GIF 已移至 <code>_archive/</code> 归档，视频播放地址未改动。</li>
+<li><b>补图片尺寸属性</b>：1551 张图片未声明 width/height，会产生累计布局偏移（CLS）。若追求 Core Web Vitals 满分，可按实际尺寸补充。</li>
+<li><b>404 页</b>：按惯例未加入 sitemap、未放 JSON-LD，属正常配置，无需处理。</li>
+</ul>
+</div>
+
+<div class="note">💡 <b>说明</b>：审计过程中一度报告“36 页图片缺 alt / 中文残留 / 404 页缺结构化数据”，经逐项核查均为检测脚本误判——<code>alt=""</code> 是装饰图的合规写法、中文仅在 CSS 注释、404 页不进 sitemap 是标准做法。检测脚本已修正，最终 28 项全通过。</div>
+
+<p class="footer">体检时间：2026-11-25 · 站点：www.hair-grafting.com · 迁移前备份：barley-hair-8-main-BACKUP-DOMAIN-20261125</p>
+</div>
+</body>
+</html>

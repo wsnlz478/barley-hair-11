@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barley 植发站 — 代码审查与全面升级报告</title>
+<style>
+  :root{
+    --navy:#001F5B; --navy2:#1a3570; --gold:#C9A227; --gold-l:#FFF8E1;
+    --ink:#1a1a2e; --gray:#4a5568; --light:#F5F7FA; --line:#e3e8f0;
+    --green:#1a7f4b; --green-bg:#e9f7ef; --red:#b3261e; --red-bg:#fdecea;
+    --amber:#9a6700; --amber-bg:#fff4d6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;color:var(--ink);background:var(--light);line-height:1.7;padding:0 0 80px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  header.hero{background:linear-gradient(135deg,#001F5B 0%,#1a3570 55%,#2d4a8a 100%);color:#fff;padding:56px 0 48px;box-shadow:0 8px 30px rgba(0,31,91,.25)}
+  header.hero .wrap{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+  header.hero h1{font-size:34px;font-weight:800;letter-spacing:.5px}
+  header.hero .sub{color:#cdd8ef;font-size:15px;margin-top:8px;max-width:640px}
+  .date{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);padding:8px 16px;border-radius:24px;font-size:13px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:-28px 0 40px}
+  .stat{background:#fff;border-radius:14px;padding:20px 18px;box-shadow:0 4px 18px rgba(0,31,91,.08);border-top:3px solid var(--gold);text-align:center}
+  .stat .n{font-size:28px;font-weight:800;color:var(--navy)}
+  .stat .l{font-size:13px;color:var(--gray);margin-top:4px}
+  section{background:#fff;border-radius:16px;padding:32px 34px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,31,91,.05);border:1px solid var(--line)}
+  h2.sec{font-size:22px;color:var(--navy);font-weight:800;padding-bottom:14px;margin-bottom:22px;border-bottom:2px solid var(--gold-l);display:flex;align-items:center;gap:10px}
+  h2.sec .num{background:var(--navy);color:var(--gold);width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:15px}
+  h3{font-size:16px;color:var(--navy2);margin:20px 0 10px}
+  p{color:var(--gray);font-size:14.5px;margin-bottom:10px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0 18px}
+  th{background:var(--light);color:var(--navy);text-align:left;padding:11px 12px;font-weight:700;border-bottom:2px solid var(--line)}
+  td{padding:10px 12px;border-bottom:1px solid var(--line);color:var(--gray);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap}
+  .t-ok{background:var(--green-bg);color:var(--green)}
+  .t-fix{background:var(--amber-bg);color:var(--amber)}
+  .t-risk{background:var(--red-bg);color:var(--red)}
+  .t-info{background:#e8eefb;color:var(--navy2)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .card{background:var(--light);border-radius:12px;padding:18px 20px;border-left:4px solid var(--gold)}
+  .card.g{border-left-color:var(--green)} .card.r{border-left-color:var(--red)} .card.a{border-left-color:var(--amber)}
+  .card h4{font-size:15px;color:var(--navy);margin-bottom:6px}
+  .card p{font-size:13.5px;margin:0}
+  .bar{height:10px;border-radius:6px;background:#eef1f6;overflow:hidden;margin:6px 0}
+  .bar > i{display:block;height:100%;border-radius:6px}
+  .cmp{display:flex;align-items:center;gap:14px;margin:10px 0}
+  .cmp .lbl{width:64px;font-size:13px;color:var(--gray);flex-shrink:0}
+  .cmp .track{flex:1;height:22px;background:#eef1f6;border-radius:6px;overflow:hidden;position:relative}
+  .cmp .fill{height:100%;display:flex;align-items:center;padding-left:10px;color:#fff;font-size:12px;font-weight:700;border-radius:6px}
+  .cmp .val{width:96px;font-size:13px;font-weight:700;color:var(--navy);text-align:right;flex-shrink:0}
+  ul.clean{list-style:none;margin:8px 0}
+  ul.clean li{padding:7px 0 7px 26px;position:relative;font-size:14px;color:var(--gray)}
+  ul.clean li:before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:800}
+  ul.clean.warn li:before{content:'!';color:var(--red)}
+  .keep{background:var(--green-bg);border:1px solid #c6e8d5;border-radius:12px;padding:18px 22px;margin-top:8px}
+  .keep h4{color:var(--green);margin-bottom:8px}
+  .note{background:var(--amber-bg);border-left:4px solid var(--amber);padding:14px 18px;border-radius:8px;font-size:13.5px;color:#7a5200;margin:14px 0}
+  code{background:#eef1f6;padding:2px 7px;border-radius:5px;font-size:12.5px;color:var(--navy2);font-family:Consolas,monospace}
+  footer{text-align:center;color:#8a94a6;font-size:12.5px;margin-top:30px}
+  @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}section{padding:24px 20px}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <h1>Barley 植发站 · 代码审查与全面升级报告</h1>
+      <div class="sub">面向国际患者的多页营销站 —— 全站架构盘点、图片资产分析、性能与安全加固、内容与 SEO/GEO 全面升级</div>
+    </div>
+    <div class="date">生成于 2026-11-23</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="stats">
+    <div class="stat"><div class="n">32</div><div class="l">HTML 页面</div></div>
+    <div class="stat"><div class="n">~310</div><div class="l">图片资产</div></div>
+    <div class="stat"><div class="n">3.04<span style="font-size:15px">MB</span></div><div class="l">Banner 体积缩减</div></div>
+    <div class="stat"><div class="n">29</div><div class="l">页面内容升级</div></div>
+  </div>
+
+  <!-- 1 文件夹 -->
+  <section>
+    <h2 class="sec"><span class="num">1</span>文件夹 / 文件用途盘点</h2>
+    <p>站点为纯静态 HTML 营销站，无后端。目录按图片主题拆分，逻辑清晰。</p>
+    <table>
+      <tr><th>目录 / 文件</th><th>用途</th><th>规模</th><th>说明</th></tr>
+      <tr><td><code>Banner/</code></td><td>首页 Hero 轮播大图</td><td>23 张 · 2732×1534</td><td>16:9 横图，首屏核心，体积最大</td></tr>
+      <tr><td><code>women/</code> · <code>manHairline/</code> · <code>manBald/</code></td><td>女性 / 男性发际线 / 秃顶 案例前后对比</td><td>33 / 35 / 26 张</td><td>1200×1200 方图</td></tr>
+      <tr><td><code>Photos/</code></td><td>医患合影 / 患者实拍</td><td>76 张 · 800×800</td><td>方图</td></tr>
+      <tr><td><code>Hospital/</code></td><td>院区环境 / 诊室实景</td><td>73 张 · 982×509</td><td>横图，比例统一</td></tr>
+      <tr><td><code>Doctor/</code></td><td>医生头像</td><td>21 张 · 314×461</td><td>竖图</td></tr>
+      <tr><td><code>Patents/</code></td><td>专利证书</td><td>14 张 · 750×1061</td><td>竖图</td></tr>
+      <tr><td><code>Beard/</code> · <code>Eyebrow/</code></td><td>胡须 / 眉毛案例</td><td>5 / 2 张 · 方图</td><td>1200×1200</td></tr>
+      <tr><td><code>images/</code></td><td>Logo / 二维码 / 背景</td><td>7 个</td><td>含 PNG/JPG/GIF</td></tr>
+      <tr><td><code>css/style.css</code></td><td>全站唯一公共样式表</td><td>5855 行</td><td>Navy+Gold 主题</td></tr>
+      <tr><td><code>js/main.js</code></td><td>全站唯一交互脚本</td><td>466 行</td><td>轮播 / 画廊 / FAQ / 复制</td></tr>
+      <tr><td>根目录 *.html</td><td>功能页 + 服务页 + 教育页 + 落地页</td><td>32 页</td><td>详情见 sitemap.xml</td></tr>
+    </table>
+    <div class="note">另有 <code>000.html</code>（微信投放入口，含 UC 广告脚本，robots 已禁收录）、<code>404.html</code>、<code>index_original_backup.html</code>（备份）、<code>temp-fut-content.html</code>（临时稿）——均为非主站运营页，未做内容升级。</div>
+  </section>
+
+  <!-- 2 图片分析 -->
+  <section>
+    <h2 class="sec"><span class="num">2</span>图片资产与「防拉伸」核查</h2>
+    <p>所有图片目录尺寸高度统一，调用位置合理。CSS 中关键画廊均已使用 <code>object-fit: cover</code>（等比裁切而非拉伸），二维码/证书用 <code>contain</code>（完整显示）。<span class="tag t-ok">图片位置与比例未做任何改动</span></p>
+    <table>
+      <tr><th>核查项</th><th>结果</th><th>处理</th></tr>
+      <tr><td>案例图（方图）在画廊中显示</td><td><code>object-fit:cover</code> 等比裁切</td><td><span class="tag t-ok">保持原样</span></td></tr>
+      <tr><td>医生头像（竖图）在卡片中显示</td><td>等比裁切，无变形</td><td><span class="tag t-ok">保持原样</span></td></tr>
+      <tr><td>二维码 / 专利证书</td><td><code>object-fit:contain</code> 完整显示</td><td><span class="tag t-ok">保持原样</span></td></tr>
+      <tr><td>Banner 压缩</td><td>仅降 JPEG 质量，<b>分辨率与宽高比完全不变</b></td><td><span class="tag t-ok">不会拉伸</span></td></tr>
+    </table>
+  </section>
+
+  <!-- 3 性能 -->
+  <section>
+    <h2 class="sec"><span class="num">3</span>性能问题与修复</h2>
+    <h3>① 首屏 Banner 体积（最大瓶颈）</h3>
+    <div class="cmp"><div class="lbl">优化前</div><div class="track"><div class="fill" style="width:100%;background:linear-gradient(90deg,#b3261e,#d94f45)">11.78 MB</div></div><div class="val">均 524KB/张</div></div>
+    <div class="cmp"><div class="lbl">优化后</div><div class="track"><div class="fill" style="width:74%;background:linear-gradient(90deg,#1a7f4b,#3cb371)">8.74 MB</div></div><div class="val">均 389KB/张</div></div>
+    <p>23 张 Banner 采用渐进式 JPEG + 质量优化，节省 <b>3.04 MB（约 26%）</b>，超过 500KB 的图片从 15 张降至 2 张，首屏加载明显加快，且分辨率不变、绝不拉伸。</p>
+
+    <h3>② 图片懒加载</h3>
+    <p>全站静态图片 <b>736 处</b>加入 <code>loading="lazy"</code> + <code>decoding="async"</code>；首屏 Banner 用 <code>fetchpriority="high"</code> 优先加载。JS 动态注入的画廊图片同步加了懒加载。</p>
+
+    <h3>③ 连接与资源提示</h3>
+    <p>29 个页面加入对 CDN 与表单域名的 <code>preconnect</code> / <code>dns-prefetch</code>，减少 DNS 与 TLS 握手耗时。</p>
+
+    <h3>④ CSS 重复定义</h3>
+    <p>检测到 63 个重复选择器（如 <code>.hospital-grid</code> 出现 3 次），均为历史迭代的差异化叠加。因删除可能破坏多页面布局，<b>本报告如实标记但未强行合并</b>（收益小、风险高）。</p>
+  </section>
+
+  <!-- 4 SEO GEO -->
+  <section>
+    <h2 class="sec"><span class="num">4</span>SEO / GEO 全面升级</h2>
+    <div class="grid2">
+      <div class="card g"><h4>结构化数据 JSON-LD</h4><p>32 页注入 <code>MedicalClinic</code>（诊所实体）+ <code>WebPage</code> + <code>BreadcrumbList</code> 结构化数据，含电话、邮箱、成立年份、服务、服务地区，便于搜索引擎与 AI 引擎（GEO）抓取引用。</p></div>
+      <div class="card g"><h4>社交分享卡片</h4><p>补齐 Open Graph 与 Twitter Card（title/description/image/url/locale），分享到社交平台时呈现完整卡片。</p></div>
+      <div class="card g"><h4>权威内容模块</h4><p>29 页注入定制「信任凭证」板块，内容为大麦官方权威事实（ISHRS 推荐、微针 2.0 白皮书、三庭五眼美学、AI 智慧医疗、分级诊疗），英文地道，按 8 类主题差异化，提升国际读者信任与 GEO 引用概率。</p></div>
+      <div class="card g"><h4>域名一致性</h4><p><code>robots.txt</code> 中原错误域名 <code>barley.jishaoshi.com</code> 已统一为 <code>barley.zhifazhifa.com</code>，与 canonical / sitemap 一致。</p></div>
+    </div>
+    <p style="margin-top:14px">既有 SEO 基础良好：每页已有独立 title / description / keywords / canonical / hreflang / robots 元标签，sitemap 收录 29 个 URL。</p>
+  </section>
+
+  <!-- 5 安全 -->
+  <section>
+    <h2 class="sec"><span class="num">5</span>安全隐患排查</h2>
+    <div class="card r" style="margin-bottom:14px">
+      <h4>🔴 最高优先级 · 表单脚本域名疑似拼写钓鱼</h4>
+      <p><code>female-hair-loss-guide.html</code> 中表单脚本指向 <code>www.zhifuphifa.com</code>（<b>zhifu</b>），而全站其余 29 页均为正确的 <code>www.zhifazhifa.com</code>（<b>zhifa</b>）。这可能是拼写错误或被篡改的钓鱼域名。<br><b>因你明确要求「表单 JS 及配套功能不要改」，我未做任何改动</b> —— 请务必人工核实此域名是否为你方所有，如需修正请告知。</p>
+    </div>
+    <div class="grid2">
+      <div class="card a"><h4>🟠 废弃页含第三方广告脚本</h4><p><code>000.html</code> 引用 <code>image.uc.cn</code>（UC 广告）与 <code>agent.qianwen.com</code> 等外部脚本。该页为投放入口、robots 已禁收录、不在 sitemap，影响范围有限。如需彻底清理可单独处理。</p></div>
+      <div class="card a"><h4>🟠 供应链风险 · 外部 CDN</h4><p>表单JS依赖外部域名、图标依赖 cdnjs。第三方脚本变更可能影响页面。已通过 preconnect 优化加载，但依赖其可用性。</p></div>
+      <div class="card"><h4>低风险 · innerHTML 使用</h4><p><code>main.js</code> 中 8 处 <code>innerHTML</code> 数据源均为脚本内硬编码常量（图片路径、文案、FAQ），非用户输入，<b>无 XSS 风险</b>。</p></div>
+      <div class="card g"><h4>✅ 无明文与注入风险</h4><p>全站无 <code>http://</code> 明文引用，无数据库 / SQL 操作，表单提交由外部脚本处理。</p></div>
+    </div>
+  </section>
+
+  <!-- 6 保持不变 -->
+  <section>
+    <h2 class="sec"><span class="num">6</span>你的「禁止改动项」— 全部完好</h2>
+    <div class="keep">
+      <h4>以下项目本次升级均未触碰，已逐项验证</h4>
+      <ul class="clean">
+        <li>表单 JS <code>form2026.js</code> 引用 —— 30 页保持原样</li>
+        <li>表单配置 <code>ZF_FORM_CONFIG</code> —— 30 页保持原样</li>
+        <li>外链视频 <code>hospital.mp4</code> / <code>implanterpen.mp4</code>（共 3 处）—— URL 未改动</li>
+        <li>所有图片的文件名、路径、宽高比、显示尺寸 —— 完全未改动</li>
+        <li>页面主体内容、导航结构、Footer 结构 —— 保持原样，仅新增模块</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 7 升级清单 -->
+  <section>
+    <h2 class="sec"><span class="num">7</span>改动清单与验证</h2>
+    <table>
+      <tr><th>改动项</th><th>范围</th><th>验证结果</th></tr>
+      <tr><td>Banner 渐进式压缩</td><td>23 张</td><td><span class="tag t-ok">通过 · 省 3.04MB</span></td></tr>
+      <tr><td>图片懒加载 + 优先级</td><td>736 处静态 + JS 动态</td><td><span class="tag t-ok">通过</span></td></tr>
+      <tr><td>preconnect / dns-prefetch</td><td>29 页</td><td><span class="tag t-ok">通过</span></td></tr>
+      <tr><td>JSON-LD + OG/Twitter + GEO</td><td>32 页</td><td><span class="tag t-ok">通过</span></td></tr>
+      <tr><td>权威凭证内容模块（8 类主题差异化）</td><td>29 页</td><td><span class="tag t-ok">通过</span></td></tr>
+      <tr><td>robots 域名统一</td><td>robots.txt</td><td><span class="tag t-ok">通过</span></td></tr>
+      <tr><td>HTML 标签结构完整性</td><td>全部页面</td><td><span class="tag t-ok">0 异常</span></td></tr>
+      <tr><td>关键功能回归（表单/视频/图片）</td><td>全站</td><td><span class="tag t-ok">完好</span></td></tr>
+    </table>
+    <div class="note">全站原始 HTML/CSS/JS 已备份至 <code>../barley-hair-8-main-BACKUP-20261123-094356</code>，如需回滚可直接使用。</div>
+  </section>
+
+  <footer>Barley 植发站全面升级 · 审查报告 · 2026-11-23</footer>
+</div>
+</body>
+</html>

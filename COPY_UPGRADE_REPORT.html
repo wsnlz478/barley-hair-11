@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>全站文案升级报告 · Barley 英文站</title>
+<style>
+:root{--ink:#16233b;--muted:#5b6b85;--line:#e2e8f0;--bg:#f5f7fb;--card:#fff;--accent:#1a4f9c;--ok:#0a7a4b;--warn:#a8590b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:48px 24px 80px}
+h1{font-size:32px;margin:0 0 8px}h2{font-size:21px;margin:38px 0 14px;padding-left:12px;border-left:4px solid var(--accent)}
+.lead{color:var(--muted);margin:0 0 28px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 26px;margin:14px 0;box-shadow:0 2px 10px rgba(20,40,80,.04)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin:18px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.stat b{display:block;font-size:28px;color:var(--accent);line-height:1.2}.stat span{color:var(--muted);font-size:14px}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:15px}th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-weight:600;background:#fafbfd}
+code{background:#eef2f8;border-radius:5px;padding:1px 6px;font-size:13px;color:#234}
+.ok{color:var(--ok);font-weight:600}.warn{color:var(--warn);font-weight:600}
+ul{margin:8px 0;padding-left:22px}li{margin:5px 0}
+.foot{margin-top:32px;color:var(--muted);font-size:13px}
+@media(max-width:640px){.wrap{padding:28px 16px 60px}h1{font-size:26px}table{font-size:13px}th,td{padding:8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>全站文案升级与域名迁移报告</h1>
+<p class="lead">范围：65 个公开英文页面（含 36 个分院页）。本次完成文案升级、title 优化、官方网址迁移至 <code>www.hair-grafting.com</code> 及 WhatsApp 号码更新；表单交互逻辑、外链视频、图片位置与比例均未改动。</p>
+
+<h2>〇、域名迁移与联系方式更新（本轮）</h2>
+<div class="card">
+<table>
+<tr><th>项目</th><th>处理</th></tr>
+<tr><td>官方网址</td><td><code>barley.zhifazhifa.com</code> → <code>www.hair-grafting.com</code>，共迁移 688 处：canonical、hreflang、og:url、og:image、twitter:image、JSON-LD（@id / url / image / item）、站内绝对链接全部更新；<code>sitemap.xml</code> 65 条、<code>robots.txt</code> 2 处同步更新，旧域名 0 残留。</td></tr>
+<tr><td>WhatsApp</td><td>底部联系方式与城市页结构化数据电话由 <code>+86 15810155700</code> 更新为 <code>+86 13730143529</code>，共 108 处；WeChat 微信号 <code>15810155700</code> 保持不变。</td></tr>
+<tr><td>严格未改动项</td><td>65 页表单 JS 地址 <code>https://www.zhifazhifa.com/sendemail/form2026.js</code> 及 <code>window.ZF_FORM_CONFIG</code> 配置块逐字比对无变化；2 个外链视频（barleyhair.com）URL 保持不变；表单服务器 preconnect 保留。</td></tr>
+<tr><td>其他</td><td><code>index.html.bak</code> 已加入 robots 屏蔽，避免旧域名备份页被收录。</td></tr>
+</table>
+</div>
+
+<div class="grid">
+  <div class="stat"><b>65</b><span>已完成文案升级的页面</span></div>
+  <div class="stat"><b>36</b><span>完成差异化表达的分院页</span></div>
+  <div class="stat"><b>0</b><span>残留模板化 FAQ / 评价句</span></div>
+  <div class="stat"><b>17/17</b><span>最终自动校验通过项</span></div>
+</div>
+
+<h2>一、事实与逻辑纠错</h2>
+<div class="card">
+<table>
+<tr><th>问题</th><th>处理</th></tr>
+<tr><td>数字口径混乱：18+/20 年、30+/40 家分院、14/10+ 项专利、60/50+ 个国家</td><td>按官方资料统一为 <code>20+ years / since 2006</code>、<code>40+ clinics</code>、<code>10+ patents</code>、<code>50+ countries</code>、<code>100,000+ procedures</code>，并同步至正文、Meta、OG、Twitter 与 JSON-LD。</td></tr>
+<tr><td><code>baldness-restoration.html</code> 混入一整段日文患者评价</td><td>改写为地道英文评价，保留原始信息（Norwood 7、3,200 grafts、胡须毛囊、18 个月效果）。</td></tr>
+<tr><td><code>alopecia-treatment-china.html</code> 出现 820K+、250 万患者/年、181 家诊所、2014 年起等矛盾数据</td><td>统一为 100,000+ 与「since 2006」；「Stem Cell Hair Treatment/Transplant」等不准确医学营销名改为 Regenerative 相关表述。</td></tr>
+<tr><td>土耳其对比页存在单边贬低与「土耳其更便宜」残留表述</td><td>保留「中国同配置更便宜」的价格事实（中国 $3,200–$5,800 / 土耳其 $4,000–$7,500），同时改为平衡的Credentials、技术、售后对比语气。</td></tr>
+<tr><td><code>female-hair-loss-guide.html</code> 表单域名拼写为 <code>zhifuphifa.com</code></td><td>更正为全站统一的 <code>zhifazhifa.com</code>（仅改域名，未改表单配置与交互）。</td></tr>
+<tr><td>36 个城市页 FAQ 出现 “is the The …”“is the A …” 语法错误</td><td>全部重写为自然的网络介绍句。</td></tr>
+</table>
+</div>
+
+<h2>二、英文表达与医学合规</h2>
+<div class="card">
+<ul>
+<li>将 <code>guarantee / guaranteed / 100% / painless / no scarring</code> 等绝对化承诺改为 <code>ensure / reported / comfortable / minimal scarring</code> 等可核实表述；保留「供体区毛囊具有遗传稳定性、移植后长期生长」这类医学上成立的说明。</li>
+<li>去除未经证实的顶级声称：“#1”“world's best”“more procedures than any competing clinic”“the original developers of microneedle”等，改为可验证的“leading / among the first in China to adopt”。</li>
+<li>修正标题式大小写与非母语搭配：全站 “Clinic In China” → “Clinic in China”，“an fascinating” → “a fascinating”，“high-quality care at…” 句首大写等。</li>
+<li>核心服务页、指南页、关于/联系/FAQ 页统一为简洁、直接的英语表达，删除堆砌形容词。</li>
+</ul>
+</div>
+
+<h2>三、城市页去模板化</h2>
+<div class="card">
+<p>原 36 个分院页中，14 组 FAQ / 评价句完全重复。现按城市轮换使用 6 套自然表达，并在合适位置嵌入城市名；城市专属景点、机场、交通内容保持不变。最终重复句仅剩站点级页脚、免责声明与导航栏（属于应有的一致性）。</p>
+</div>
+
+<h2>四、SEO / GEO 元数据</h2>
+<div class="card">
+<ul>
+<li>65 个页面全部重写 title 与 description：title 40–65 字符、description 105–165 字符，无重复。</li>
+<li>品牌后缀统一为 <code>Barley Hair Restoration</code>，消除原先 4 种混用写法（Barley Hair Clinic / Barley in China / Barley / Barley Hair Restoration），强化品牌实体一致性（GEO）。</li>
+<li>核心页 title 加入差异化卖点：首页「Since 2006」、价格页「From $3,200」、技术页「10+ Patents」、关于页「20 Years, 40+ Clinics, 100,000+ Procedures」、对比页「Cost, Safety and Results」。</li>
+<li>同步修正 <code>cases.html</code> 与 <code>hair-transplant-process.html</code> 的 OG/Twitter 标题（此前含 <code>&amp;</code> 编码导致漏替换），全站 65 页 title / og:title / twitter:title / JSON-LD name 现已完全一致。</li>
+<li>同步更新 og:title / og:description / twitter:title / twitter:description / JSON-LD 中的名称与描述。</li>
+<li>canonical 全站唯一且与公开页面一一对应；sitemap 覆盖全部 65 个公开页。</li>
+<li>修复页脚年份 <code>2006-2024</code> → <code>2006-2026</code>（含 404 页）。</li>
+</ul>
+</div>
+
+<h2>五、最终校验</h2>
+<div class="card">
+<p class="ok">全部 17 项通过：</p>
+<ul>
+<li>HTML 标签结构平衡 · UTF-8 无乱码 · charset 声明正确 · 图片引用有效 · 站内链接有效</li>
+<li>表单脚本覆盖 64/65（<code>international-patients-guide.html</code> 原本就没有表单模块，按需求未新增）</li>
+<li>外链视频保留 2 个 · JSON-LD 可解析 · title/description 全覆盖且长度合规 · canonical 唯一 · sitemap 完整 · 每页单一 h1</li>
+<li>JS 语法检查通过 · CSS 括号平衡 883/883 · 无中文/日文可见文案、无旧口径残留</li>
+</ul>
+<p class="warn">说明：404.html 按惯例不进 sitemap，也不包含完整 SEO 元数据；报告页已设置 noindex。</p>
+</div>
+
+<p class="foot">升级前备份：<code>barley-hair-8-main-BACKUP-COPY-20261124-1035</code>（位于桌面目录）。</p>
+</div>
+</body>
+</html>

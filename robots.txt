@@ -1,0 +1,22 @@
+# Barley Hair Transplant - Robots.txt
+# https://www.hair-grafting.com
+
+User-agent: *
+Allow: /
+
+# 屏蔽备份 / 临时 / 草稿 / 验证文件，避免重复内容与无效页被收录
+Disallow: /index_original_backup.html
+Disallow: /index.html.bak
+Disallow: /000.html
+Disallow: /temp-fut-content.html
+Disallow: /CODE_AUDIT_REPORT.html
+Disallow: /google2a71b21aef840aa7.html
+
+# 404 页无需收录
+Disallow: /404.html
+
+# Sitemap location
+Sitemap: https://www.hair-grafting.com/sitemap.xml
+
+# 归档资源（原大体积GIF等），无需收录
+Disallow: /_archive/
