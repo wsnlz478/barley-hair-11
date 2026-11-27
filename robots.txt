@@ -10,6 +10,9 @@ Disallow: /index.html.bak
 Disallow: /000.html
 Disallow: /temp-fut-content.html
 Disallow: /CODE_AUDIT_REPORT.html
+Disallow: /COPY_UPGRADE_REPORT.html
+Disallow: /PRELAUNCH_QA_REPORT.html
+Disallow: /FINAL_QA_REPORT.html
 Disallow: /google2a71b21aef840aa7.html
 
 # 404 页无需收录

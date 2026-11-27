@@ -43,6 +43,7 @@ ul{margin:8px 0;padding-left:22px}li{margin:6px 0}
 <tr><th style="width:26%">问题</th><th style="width:12%">严重度</th><th>处理与影响</th></tr>
 <tr><td><b>36 个城市页 CTA 按钮锚点失效</b></td><td class="fix">中 · 功能</td><td><code>&lt;a href="#contact"&gt;</code> 的“Book Your Free Consultation”等 2 个按钮点击后无反应——页面有 <code>&lt;section class="contact"&gt;</code> 但没有 <code>id="contact"</code>。已为 36 页统一补上 <code>id="contact"</code>，按钮现可正确滚动到联系区。</td></tr>
 <tr><td><b>剪贴板 API 在 HTTP 环境报错</b></td><td class="fix">低 · 兼容</td><td><code>copyToClipboard()</code> 原本只在 Promise 的 catch 里降级，若 <code>navigator.clipboard</code> 本身不存在（HTTP 站点 / 旧 Safari）会直接抛 TypeError。已增加前置存在性判断，并将降级逻辑抽取为 <code>legacyCopy()</code>，HTTP 与 HTTPS 均可复制微信号/WhatsApp/邮箱。JS 语法校验通过，3 个全局导出函数保持不变。</td></tr>
+<tr><td><b>Google 提示"重复网页 / 规范冲突"不收录</b></td><td class="fix">高 · SEO</td><td>根因：GSC 提交的是根路径 <code>/</code>，但首页 canonical 指向 <code>/index.html</code>，两者指向同一内容产生规范冲突。已把首页 canonical / hreflang / og:url / sitemap 全部统一为 <code>https://www.hair-grafting.com/</code>，并将全站 135 处首页内链由 <code>index.html</code> 改为 <code>/</code>；另把 3 个内部报告页加入 robots 屏蔽。服务器 301 规则见 <code>SERVER_CONFIG_GUIDE.txt</code>。</td></tr>
 </table>
 </div>
 
@@ -66,7 +67,7 @@ ul{margin:8px 0;padding-left:22px}li{margin:6px 0}
 <h2>三、上线后建议优化（不影响本次上线）</h2>
 <div class="card">
 <ul>
-<li><b>配置 301 重定向</b>：把旧域名 <code>barley.zhifazhifa.com</code> 全站 301 到 <code>www.hair-grafting.com</code>，并在 Google Search Console / Bing Webmaster 提交域名迁移与新 sitemap，避免排名波动。</li>
+<li><b class="warn">⚠ 必须配置服务器 301 重定向</b>：站内修正已完成，但服务器层面需把旧域名 <code>barley.zhifazhifa.com</code> 和 <code>/index.html</code> 全站 301 到新域名根路径，否则 Google 的重复提示不会消失。Nginx / Apache 完整规则见 <code>SERVER_CONFIG_GUIDE.txt</code>。之后在 GSC 重新提交 <code>https://www.hair-grafting.com/sitemap.xml</code> 并用"网址检查"验证。</li>
 <li><b class="ok">✓ 已优化：4.59MB 动图 → 115KB 截图</b>：<code>images/new-method-logo-1.gif</code>（1280×720、210 帧）原本是 technology.html 中视频的 poster 封面，已用首帧（含品牌 Logo 与 "Choi Implanter Pen" 标题）导出为 <code>new-method-logo-1.jpg</code>，尺寸不变、画面一致，体积从 4.59MB 降至 115KB（<b>省 4.48MB / 97.5%</b>）。原 GIF 已移至 <code>_archive/</code> 归档，视频播放地址未改动。</li>
 <li><b>补图片尺寸属性</b>：1551 张图片未声明 width/height，会产生累计布局偏移（CLS）。若追求 Core Web Vitals 满分，可按实际尺寸补充。</li>
 <li><b>404 页</b>：按惯例未加入 sitemap、未放 JSON-LD，属正常配置，无需处理。</li>

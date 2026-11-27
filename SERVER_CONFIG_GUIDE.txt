@@ -1,0 +1,106 @@
+================================================================================
+服务器重定向配置说明 — www.hair-grafting.com
+用途：解决 Google Search Console "重复网页 / 规范网页冲突" 提示
+================================================================================
+
+【背景】
+站点从旧域名 barley.zhifazhifa.com 迁移到 www.hair-grafting.com 后，
+Google 仍可能索引旧 URL；同时 /index.html 与 / 两个地址指向同一首页。
+页面内的 canonical / hreflang / sitemap 已全部修正，以下服务器规则用于
+完成 301 重定向，两者缺一不可。
+
+================================================================================
+一、Nginx 配置（加到站点 server 块）
+================================================================================
+
+# 1) 旧域名 -> 新域名（保留完整路径与参数）
+server {
+    listen 80;
+    listen 443 ssl;
+    server_name barley.zhifazhifa.com zhifazhifa.com;
+    # ssl_certificate /path/to/new-domain.crt;   # 需为新域名配证书
+    # ssl_certificate_key /path/to/new-domain.key;
+    return 301 https://www.hair-grafting.com$request_uri;
+}
+
+# 2) 新域名：强制 HTTPS + 统一 www
+server {
+    listen 80;
+    server_name hair-grafting.com www.hair-grafting.com;
+    return 301 https://www.hair-grafting.com$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name hair-grafting.com;          # 非 www -> www
+    # ssl_certificate ...
+    return 301 https://www.hair-grafting.com$request_uri;
+}
+
+# 3) 主站：/index.html -> / （消除首页重复）
+server {
+    listen 443 ssl;
+    server_name www.hair-grafting.com;
+    root /path/to/barley-hair-8-main;
+    index index.html;
+
+    # 首页规范化
+    location = /index.html {
+        return 301 https://www.hair-grafting.com/;
+    }
+
+    # 其他页面正常服务
+    location / {
+        try_files $uri $uri.html $uri/ =404;
+    }
+}
+
+================================================================================
+二、Apache 配置（.htaccess，放在网站根目录）
+================================================================================
+
+RewriteEngine On
+
+# 1) 旧域名 -> 新域名
+RewriteCond %{HTTP_HOST} ^barley\.zhifazhifa\.com$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^zhifazhifa\.com$ [NC]
+RewriteRule ^(.*)$ https://www.hair-grafting.com/$1 [R=301,L]
+
+# 2) 强制 HTTPS + www
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^hair-grafting\.com$ [NC]
+RewriteRule ^(.*)$ https://www.hair-grafting.com/$1 [R=301,L]
+
+# 3) 首页 /index.html -> /
+RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+RewriteRule ^index\.html$ / [R=301,L]
+
+# 4) 目录默认页
+DirectoryIndex index.html
+
+================================================================================
+三、部署后在 Google Search Console 的操作
+================================================================================
+
+1. 确认新域名资源已验证（www.hair-grafting.com）。
+2. 站点地图：提交 https://www.hair-grafting.com/sitemap.xml
+3. 使用"网址检查"工具分别检查：
+   - https://www.hair-grafting.com/       -> 应显示"网址已编入索引"
+   - https://www.hair-grafting.com/index.html -> 应显示"已重定向到 /"
+4. 在"移除"工具中，可临时提交旧域名 URL 加速清理缓存（可选）。
+5. 等待 1-2 周重新抓取后，"重复网页"提示会逐步消失。
+
+================================================================================
+四、已完成的站内修正（无需再动）
+================================================================================
+
+[x] 首页 canonical / hreflang / og:url 全部指向 https://www.hair-grafting.com/
+[x] 全站 135 处指向首页的内链由 index.html 统一为 /
+[x] sitemap 首页条目改为根路径 /
+[x] 64 个内页 canonical 均指向自身（正确）
+[x] robots.txt 屏蔽了备份页、报告页、归档目录、404 页
+[x] 旧域名 / 旧手机号站内 0 残留
+
+注意：如果服务器无法配置上述重定向，Google 仍可能保留旧 URL 的索引，
+"规范网页冲突"提示会持续存在。服务器配置是本次修复的必要环节。
+================================================================================
